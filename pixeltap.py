@@ -238,94 +238,97 @@ def main():
  
     while True:
         print_welcome_message()
-        auto_upgrade_pet = input("Auto Upgrade All Pet? (default n) (y/n): ").strip().lower()
-        if auto_upgrade_pet in ['y', 'n', '']:
-            auto_upgrade_pet = auto_upgrade_pet or 'n'
-        else:
-            print("Masukkan 'y' atau 'n'.")
-        if auto_upgrade_pet == 'y':
-            max_level_pet = int(input("Masukkan max level upgrade (default 10 ) : "))
-            if max_level_pet in ['']:
-                max_level_pet = 10
-        auto_daily_combo = input("Auto Daily Combo? (default n) (y/n): ").strip().lower()
-        if auto_daily_combo in ['y', 'n', '']:
-            auto_daily_combo = auto_daily_combo or 'n'
-        else:
-            print("Masukkan 'y' atau 'n'.")
-        if auto_daily_combo == 'y':
-            user_input = input("Masukkan urutan Daily Combo (pisahkan dengan koma, misal: 1,4,3,2): ")
-            user_input_order = [int(x.strip()) for x in user_input.split(',')]
-
         try:
-            with open('query.txt', 'r') as file:
-                queries = file.readlines()
-            
-            for query_data in queries:
-                query_data = query_data.strip()
-                user_response = get_user_data(query_data)
-                
-                if user_response:
-                    username = user_response.get('username', "Gak ada username")
-                    clicks_count = "{:,.0f}".format(user_response.get('clicksCount', 0)).replace(',', '.')
-                    pet = user_response.get('pet', {})
-                    level_up_price = "{:,.0f}".format(pet.get('levelUpPrice', 0)).replace(',', '.')
-                    pet_details = f"Level: {pet.get('level', 'N/A')} | Energy: {pet.get('energy', 'N/A')} | Lv. Up Price: {level_up_price}"
-                    print(f"{Fore.BLUE+Style.BRIGHT}\n========[{Fore.WHITE + Style.BRIGHT} {username} {Fore.BLUE + Style.BRIGHT}]========")
-                    print(f"{Fore.GREEN+Style.BRIGHT}[ Balance ] : {clicks_count}")
-                    print(f"{Fore.YELLOW+Style.BRIGHT}[ Active Pet ] : {pet_details}")
-                    print(f"{Fore.YELLOW+Style.BRIGHT}\r[ Pets ] : Getting pet data...", end="", flush=True)
-                    pets_data = get_pets_data(query_data)
-                    if pets_data:
-                        try:
-                            for pet in pets_data['data']:
-                                pet_level = pet['userPet']['level']
-                                print(f"{Fore.YELLOW+Style.BRIGHT}\r[ Pets ] : {pet['name']} | Lv. {pet_level}", flush=True)
-
-                        except KeyError as e:
-                            print(f"{Fore.RED+Style.BRIGHT}\r[ Pets ] : Terjadi kesalahan: {str(e)}", flush=True)
-                    else:
-                        print(f"{Fore.RED+Style.BRIGHT}\r[ Pets ] : Gagal mendapatkan data pet          ",  flush=True)
-                    if auto_upgrade_pet == 'y':
-                        print(f"{Fore.YELLOW+Style.BRIGHT}\r[ Upgrade Pet ] : Upgrading Pet", end="", flush=True)
-                        upgrade_pet_if_needed(query_data, max_level=max_level_pet)
-                    
-        
-                    cek_progress = get_progress(query_data)
-                    if cek_progress:
-                        data = cek_progress     
-                        max_coin = "{:,.0f}".format(data['maxAvailable']).replace(',', '.')
-                        can_claim = "{:,.0f}".format(data['currentlyAvailable']).replace(',', '.')
-                        min_claim = "{:,.0f}".format(data['minAmountForClaim']).replace(',', '.')
-                        full_claim = datetime.strptime(data['nextFullRestorationDate'], "%Y-%m-%dT%H:%M:%S.%fZ").strftime("%H jam %M menit")
-                        restore_speed = data['restorationPeriodMs']
-                        print(f"{Fore.CYAN+Style.BRIGHT}[ Progress ] : Max Claim: {max_coin} | Min Claim: {min_claim}")
-                        print(f"{Fore.CYAN+Style.BRIGHT}[ Progress ] : Can Claim: {can_claim} | Full Claim: {full_claim}")
-                        print(f"{Fore.CYAN+Style.BRIGHT}[ Progress ] : Restore Speed: {restore_speed}")
-                        print(f"{Fore.YELLOW+Style.BRIGHT}\r[ Claim ] : Claiming...", end="", flush=True)
-                        claim = claim_balance(query_data)
-                        if claim:
-                            claimed_amount = claim.get('claimedAmount', 0)
-                            amount = "{:,.0f}".format(claimed_amount).replace(',', '.')
-                            print(f"{Fore.GREEN+Style.BRIGHT}\r[ Claim ] : Claimed {amount}     ", flush=True)
-                        else:
-                            if 'message' in claim and claim['message'] == "Claim not available for this user yet":
-                                print(f"{Fore.RED+Style.BRIGHT}\r[ Claim ] : Belum saatnya claim", flush=True)
-                            else:
-                                print(f"{Fore.RED+Style.BRIGHT}\r[ Claim ] : Gagal {claim}", flush=True)
-                    else:
-                        print(f"{Fore.RED + Style.BRIGHT}[ Progress ] : Gagal Cek Progress {cek_progress}")
-                else:
-                    print(f"{Fore.RED + Style.BRIGHT}[\n======= Query Salah =======")
-            print(Fore.MAGENTA + Style.BRIGHT + f"\r[ Daily Reward ] : Checking...", end="", flush=True)   
-            check_daily_rewards(query_data)
+            auto_upgrade_pet = input("Auto Upgrade All Pet? (default n) (y/n): ").strip().lower()
+            if auto_upgrade_pet in ['y', 'n', '']:
+                auto_upgrade_pet = auto_upgrade_pet or 'n'
+            else:
+                print("Masukkan 'y' atau 'n'.")
+            if auto_upgrade_pet == 'y':
+                max_level_pet = int(input("Masukkan max level upgrade (default 10 ) : "))
+                if max_level_pet in ['']:
+                    max_level_pet = 10
+            auto_daily_combo = input("Auto Daily Combo? (default n) (y/n): ").strip().lower()
+            if auto_daily_combo in ['y', 'n', '']:
+                auto_daily_combo = auto_daily_combo or 'n'
+            else:
+                print("Masukkan 'y' atau 'n'.")
             if auto_daily_combo == 'y':
-                claim_daily_combo(query_data, user_input_order)
+                user_input = input("Masukkan urutan Daily Combo (pisahkan dengan koma, misal: 1,4,3,2): ")
+                user_input_order = [int(x.strip()) for x in user_input.split(',')]
+
+            try:
+                with open('query.txt', 'r') as file:
+                    queries = file.readlines()
+                
+                for query_data in queries:
+                    query_data = query_data.strip()
+                    user_response = get_user_data(query_data)
                     
-    
-           
-            animated_loading(300)            
+                    if user_response:
+                        username = user_response.get('username', "Gak ada username")
+                        clicks_count = "{:,.0f}".format(user_response.get('clicksCount', 0)).replace(',', '.')
+                        pet = user_response.get('pet', {})
+                        level_up_price = "{:,.0f}".format(pet.get('levelUpPrice', 0)).replace(',', '.')
+                        pet_details = f"Level: {pet.get('level', 'N/A')} | Energy: {pet.get('energy', 'N/A')} | Lv. Up Price: {level_up_price}"
+                        print(f"{Fore.BLUE+Style.BRIGHT}\n========[{Fore.WHITE + Style.BRIGHT} {username} {Fore.BLUE + Style.BRIGHT}]========")
+                        print(f"{Fore.GREEN+Style.BRIGHT}[ Balance ] : {clicks_count}")
+                        print(f"{Fore.YELLOW+Style.BRIGHT}[ Active Pet ] : {pet_details}")
+                        print(f"{Fore.YELLOW+Style.BRIGHT}\r[ Pets ] : Getting pet data...", end="", flush=True)
+                        pets_data = get_pets_data(query_data)
+                        if pets_data:
+                            try:
+                                for pet in pets_data['data']:
+                                    pet_level = pet['userPet']['level']
+                                    print(f"{Fore.YELLOW+Style.BRIGHT}\r[ Pets ] : {pet['name']} | Lv. {pet_level}", flush=True)
+
+                            except KeyError as e:
+                                print(f"{Fore.RED+Style.BRIGHT}\r[ Pets ] : Terjadi kesalahan: {str(e)}", flush=True)
+                        else:
+                            print(f"{Fore.RED+Style.BRIGHT}\r[ Pets ] : Gagal mendapatkan data pet          ",  flush=True)
+                        if auto_upgrade_pet == 'y':
+                            print(f"{Fore.YELLOW+Style.BRIGHT}\r[ Upgrade Pet ] : Upgrading Pet", end="", flush=True)
+                            upgrade_pet_if_needed(query_data, max_level=max_level_pet)
+                        
+            
+                        cek_progress = get_progress(query_data)
+                        if cek_progress:
+                            data = cek_progress     
+                            max_coin = "{:,.0f}".format(data['maxAvailable']).replace(',', '.')
+                            can_claim = "{:,.0f}".format(data['currentlyAvailable']).replace(',', '.')
+                            min_claim = "{:,.0f}".format(data['minAmountForClaim']).replace(',', '.')
+                            full_claim = datetime.strptime(data['nextFullRestorationDate'], "%Y-%m-%dT%H:%M:%S.%fZ").strftime("%H jam %M menit")
+                            restore_speed = data['restorationPeriodMs']
+                            print(f"{Fore.CYAN+Style.BRIGHT}[ Progress ] : Max Claim: {max_coin} | Min Claim: {min_claim}")
+                            print(f"{Fore.CYAN+Style.BRIGHT}[ Progress ] : Can Claim: {can_claim} | Full Claim: {full_claim}")
+                            print(f"{Fore.CYAN+Style.BRIGHT}[ Progress ] : Restore Speed: {restore_speed}")
+                            print(f"{Fore.YELLOW+Style.BRIGHT}\r[ Claim ] : Claiming...", end="", flush=True)
+                            claim = claim_balance(query_data)
+                            if claim:
+                                claimed_amount = claim.get('claimedAmount', 0)
+                                amount = "{:,.0f}".format(claimed_amount).replace(',', '.')
+                                print(f"{Fore.GREEN+Style.BRIGHT}\r[ Claim ] : Claimed {amount}     ", flush=True)
+                            else:
+                                if 'message' in claim and claim['message'] == "Claim not available for this user yet":
+                                    print(f"{Fore.RED+Style.BRIGHT}\r[ Claim ] : Belum saatnya claim", flush=True)
+                                else:
+                                    print(f"{Fore.RED+Style.BRIGHT}\r[ Claim ] : Gagal {claim}", flush=True)
+                        else:
+                            print(f"{Fore.RED + Style.BRIGHT}[ Progress ] : Gagal Cek Progress {cek_progress}")
+                    else:
+                        print(f"{Fore.RED + Style.BRIGHT}[\n======= Query Salah =======")
+                print(Fore.MAGENTA + Style.BRIGHT + f"\r[ Daily Reward ] : Checking...", end="", flush=True)   
+                check_daily_rewards(query_data)
+                if auto_daily_combo == 'y':
+                    claim_daily_combo(query_data, user_input_order)
+                        
+        
+            
+                animated_loading(300)            
+            except Exception as e:
+                print(f"Terjadi kesalahan: {str(e)}")
         except Exception as e:
-            print(f"Terjadi kesalahan: {str(e)}")
+            print(f"Error Bang: {str(e)}")
 
 if __name__ == "__main__":
     main()
