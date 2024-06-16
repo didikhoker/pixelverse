@@ -210,15 +210,18 @@ def claim_daily_combo(query_data,user_input_order):
             headers['initdata'] = query_data
             response = requests.post(url=f"https://api-clicker.pixelverse.xyz/api/cypher-games/{combo_id}/answer", json=json_data, headers=headers)
             # print(headers)
-            if response.status_code == 200:
+            if response.status_code != 400:
+                
                 data = response.json()
-                amount = data.get("amount")
-                print(f"{Fore.CYAN+Style.BRIGHT}\r[ Daily Combo ] : Claimed {amount}", flush=True)
+          
+                jumlah = data.get("rewardAmount")
+                percent = data.get("rewardPercent")
+                print(f"{Fore.CYAN+Style.BRIGHT}\r[ Daily Combo ] : Claimed {jumlah} | {percent}%", flush=True)
 
             else:
                 response = response.json()
-                print(response)
-                # print(f"{Fore.RED+Style.BRIGHT}\r[ Daily Combo ] : Failed to claim {response['message']}", flush=True)
+                # print(response)
+                print(f"{Fore.RED+Style.BRIGHT}\r[ Daily Combo ] : Failed to claim {response['message']}", flush=True)
                 return None
         else:
             response = response.json()
@@ -250,8 +253,7 @@ def main():
         else:
             print("Masukkan 'y' atau 'n'.")
         if auto_daily_combo == 'y':
-            print("Masukkan urutan Daily Combo (pisahkan dengan koma, misal: 1,4,3,2):")
-            user_input = input()
+            user_input = input("Masukkan urutan Daily Combo (pisahkan dengan koma, misal: 1,4,3,2): ")
             user_input_order = [int(x.strip()) for x in user_input.split(',')]
 
         try:
