@@ -235,27 +235,28 @@ def claim_daily_combo(query_data,user_input_order):
         return None
 
 def main():
- 
+    auto_upgrade_pet = input("Auto Upgrade All Pet? (default n) (y/n): ").strip().lower()
+    if auto_upgrade_pet in ['y', 'n', '']:
+        auto_upgrade_pet = auto_upgrade_pet or 'n'
+    else:
+        print("Masukkan 'y' atau 'n'.")
+    if auto_upgrade_pet == 'y':
+        max_level_pet = int(input("Masukkan max level upgrade (default 10 ) : "))
+        if max_level_pet in ['']:
+            max_level_pet = 10
+    auto_daily_combo = input("Auto Daily Combo? (default n) (y/n): ").strip().lower()
+    if auto_daily_combo in ['y', 'n', '']:
+        auto_daily_combo = auto_daily_combo or 'n'
+    else:
+        print("Masukkan 'y' atau 'n'.")
+    if auto_daily_combo == 'y':
+        user_input = input("Masukkan urutan Daily Combo (pisahkan dengan koma, misal: 1,4,3,2): ")
+        user_input_order = [int(x.strip()) for x in user_input.split(',')]
+
     while True:
         print_welcome_message()
         try:
-            auto_upgrade_pet = input("Auto Upgrade All Pet? (default n) (y/n): ").strip().lower()
-            if auto_upgrade_pet in ['y', 'n', '']:
-                auto_upgrade_pet = auto_upgrade_pet or 'n'
-            else:
-                print("Masukkan 'y' atau 'n'.")
-            if auto_upgrade_pet == 'y':
-                max_level_pet = int(input("Masukkan max level upgrade (default 10 ) : "))
-                if max_level_pet in ['']:
-                    max_level_pet = 10
-            auto_daily_combo = input("Auto Daily Combo? (default n) (y/n): ").strip().lower()
-            if auto_daily_combo in ['y', 'n', '']:
-                auto_daily_combo = auto_daily_combo or 'n'
-            else:
-                print("Masukkan 'y' atau 'n'.")
-            if auto_daily_combo == 'y':
-                user_input = input("Masukkan urutan Daily Combo (pisahkan dengan koma, misal: 1,4,3,2): ")
-                user_input_order = [int(x.strip()) for x in user_input.split(',')]
+
 
             try:
                 with open('query.txt', 'r') as file:
