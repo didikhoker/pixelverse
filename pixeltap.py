@@ -316,12 +316,14 @@ def main():
                                     print(f"{Fore.RED+Style.BRIGHT}\r[ Claim ] : Gagal {claim}", flush=True)
                         else:
                             print(f"{Fore.RED + Style.BRIGHT}[ Progress ] : Gagal Cek Progress {cek_progress}")
+                        print(Fore.MAGENTA + Style.BRIGHT + f"\r[ Daily Reward ] : Checking...", end="", flush=True)   
+                        check_daily_rewards(query_data)
+                        if auto_daily_combo == 'y':
+                            print(Fore.CYAN + Style.BRIGHT + f"\r[ Daily Combo ] : Checking...", end="", flush=True)
+                            claim_daily_combo(query_data, user_input_order)
                     else:
                         print(f"{Fore.RED + Style.BRIGHT}[\n======= Query Salah =======")
-                print(Fore.MAGENTA + Style.BRIGHT + f"\r[ Daily Reward ] : Checking...", end="", flush=True)   
-                check_daily_rewards(query_data)
-                if auto_daily_combo == 'y':
-                    claim_daily_combo(query_data, user_input_order)
+                
                         
         
             
