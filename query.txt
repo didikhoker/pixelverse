@@ -1,2 +1,1 @@
-query=xxx
-user=xxx
+query_id=AAGHlI4LAwAAAIeUjgtn4OfE&user=%7B%22id%22%3A6636344455%2C%22first_name%22%3A%22Airdropsnear%22%2C%22last_name%22%3A%22%22%2C%22username%22%3A%22airdropsnear%22%2C%22language_code%22%3A%22en%22%2C%22allows_write_to_pm%22%3Atrue%7D&auth_date=1719577399&hash=5fe4dfd32084437b56251a2773807a5f068e0ac52a5b475051736b0ab4d47eb9
